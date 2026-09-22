@@ -1366,4 +1366,378 @@ async function openGame(gameId) {
     playerY = 100;
     velocityY = 0;
 
-    showPage("game
+    showPage("game");
+
+    startGameRuntime();
+
+  } catch (error) {
+
+    showToast(
+      error.message
+    );
+
+  }
+
+}
+
+function closeGame() {
+
+  currentGame = null;
+
+  showPage("home");
+
+}
+
+function getSkin(skinId) {
+
+  return skins.find(
+    skin => skin.id === skinId
+  ) || skins[0];
+
+}
+
+function getSkinColor(skinId) {
+
+  const colors = {
+    1: "#55d66a",
+    2: "#ff542f",
+    3: "#59c8ff",
+    4: "#8b5cf6",
+    5: "#777",
+    6: "#ffe600",
+    7: "#222",
+    8: "#a8ffff"
+  };
+
+  return colors[skinId] || "#55d66a";
+
+}
+
+function updateGamePlayer() {
+
+  const player =
+    document.getElementById(
+      "gamePlayer"
+    );
+
+  if (!player) return;
+
+  const skin =
+    getSkin(equippedSkin);
+
+  player.style.background =
+    getSkinColor(
+      skin.id
+    );
+
+  document
+    .getElementById(
+      "gamePlayerSkin"
+    )
+    .textContent =
+    skin.icon;
+
+}
+
+function startGameRuntime() {
+
+  const canvas =
+    document.getElementById(
+      "gameCanvas"
+    );
+
+  const container =
+    document.getElementById(
+      "gameContainer"
+    );
+
+  const ctx =
+    canvas.getContext("2d");
+
+  function resize() {
+
+    canvas.width =
+      container.clientWidth;
+
+    canvas.height =
+      container.clientHeight;
+
+  }
+
+  resize();
+
+  window.addEventListener(
+    "resize",
+    resize
+  );
+
+  updateGamePlayer();
+
+  const objects =
+    Array.isArray(currentGame.objects)
+      ? currentGame.objects
+      : [];
+
+  function draw() {
+
+    if (!currentGame) return;
+
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.fillStyle =
+      "#ccefd0";
+
+    ctx.fillRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    objects.forEach(object => {
+
+      const x =
+        Number(object.x) || 0;
+
+      const y =
+        Number(object.y) || 0;
+
+      if (object.type === "block") {
+
+        ctx.fillStyle =
+          object.color ||
+          "#555";
+
+        ctx.fillRect(
+          x,
+          y,
+          Number(object.width) || 40,
+          Number(object.height) || 40
+        );
+
+      }
+
+      if (object.type === "coin") {
+
+        ctx.fillStyle =
+          "#ffd21f";
+
+        ctx.beginPath();
+
+        ctx.arc(
+          x + 15,
+          y + 15,
+          12,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fill();
+
+      }
+
+      if (object.type === "spawn") {
+
+        ctx.fillStyle =
+          "rgba(85,214,106,.3)";
+
+        ctx.fillRect(
+          x,
+          y,
+          50,
+          50
+        );
+
+      }
+
+    });
+
+    updatePhysics();
+
+    requestAnimationFrame(draw);
+
+  }
+
+  draw();
+
+}
+
+function updatePhysics() {
+
+  const player =
+    document.getElementById(
+      "gamePlayer"
+    );
+
+  if (!player) return;
+
+  if (moveLeft) {
+    playerX -= 4;
+  }
+
+  if (moveRight) {
+    playerX += 4;
+  }
+
+  velocityY += 0.55;
+
+  playerY += velocityY;
+
+  const game =
+    document.getElementById(
+      "gameContainer"
+    );
+
+  const ground =
+    game.clientHeight - 60;
+
+  if (playerY > ground) {
+
+    playerY = ground;
+
+    velocityY = 0;
+
+    jumping = false;
+
+  }
+
+  if (playerX < 0) {
+    playerX = 0;
+  }
+
+  if (playerX >
+      game.clientWidth - 30) {
+
+    playerX =
+      game.clientWidth - 30;
+
+  }
+
+  player.style.left =
+    playerX + "px";
+
+  player.style.top =
+    playerY + "px";
+
+}
+
+function jump() {
+
+  if (jumping) return;
+
+  velocityY = -10;
+
+  jumping = true;
+
+}
+
+
+/* -------------------------
+   KEYBOARD
+------------------------- */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "ArrowLeft" ||
+      event.key.toLowerCase() === "a"
+    ) {
+
+      moveLeft = true;
+
+    }
+
+    if (
+      event.key === "ArrowRight" ||
+      event.key.toLowerCase() === "d"
+    ) {
+
+      moveRight = true;
+
+    }
+
+    if (
+      event.key === "ArrowUp" ||
+      event.key === " " ||
+      event.key.toLowerCase() === "w"
+    ) {
+
+      jump();
+
+    }
+
+  }
+);
+
+document.addEventListener(
+  "keyup",
+  event => {
+
+    if (
+      event.key === "ArrowLeft" ||
+      event.key.toLowerCase() === "a"
+    ) {
+
+      moveLeft = false;
+
+    }
+
+    if (
+      event.key === "ArrowRight" ||
+      event.key.toLowerCase() === "d"
+    ) {
+
+      moveRight = false;
+
+    }
+
+  }
+);
+
+
+/* -------------------------
+   LOGOUT
+------------------------- */
+
+async function logout() {
+
+  try {
+
+    await api(
+      "/api/logout",
+      {
+        method: "POST"
+      }
+    );
+
+  } catch {}
+
+  currentUser = null;
+
+  location.reload();
+
+}
+
+
+/* -------------------------
+   PROFILE MESSAGE
+------------------------- */
+
+function profileMessage(text) {
+
+  const element =
+    document.getElementById(
+      "profileMessage"
+    );
+
+  element.textContent =
+    text;
+
+}
