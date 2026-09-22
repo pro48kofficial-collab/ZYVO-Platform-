@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZYVO</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="loader">
+  <div class="loader-logo">ZYVO</div>
+
+  <div class="loader-bar">
+    <div id="loaderProgress"></div>
+  </div>
+
+  <div id="loaderText">Запуск ZYVO...</div>
+</div>
+
+<div id="app" class="hidden">
+
+  <header class="topbar">
+
+    <div class="brand">ZYVO</div>
+
+    <div class="top-actions">
+      <span id="coinBalance">🪙 0</span>
+
+      <button onclick="openPage('profile')">
+        👤
+      </button>
+    </div>
+
+  </header>
+
+  <main>
+
+    <!-- HOME -->
+
+    <section id="homePage" class="page active">
+
+      <div class="welcome">
+
+        <div>
+
+          <span class="eyebrow">
+            ZYVO PLATFORM
+          </span>
+
+          <h1>
+            Грай.<br>
+            Створюй.<br>
+            Спілкуйся.
+          </h1>
+
+          <p>
+            Незалежна платформа для гравців
+            і творців.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="quick-grid">
+
+        <button onclick="openPage('games')">
+          <strong>🎮</strong>
+          <span>Ігри</span>
+        </button>
+
+        <button onclick="openPage('friends')">
+          <strong>👥</strong>
+          <span>Друзі</span>
+        </button>
+
+        <button onclick="openPage('shop')">
+          <strong>🛒</strong>
+          <span>Магазин</span>
+        </button>
+
+        <button onclick="claimDaily()">
+          <strong>🎁</strong>
+          <span>Нагорода</span>
+        </button>
+
+      </div>
+
+      <div class="section-title">
+
+        <h2>
+          Популярні ігри
+        </h2>
+
+        <button
+          class="text-button"
+          onclick="openPage('games')"
+        >
+          Усі →
+        </button>
+
+      </div>
+
+      <div id="homeGames" class="games-grid">
+        Завантаження...
+      </div>
+
+    </section>
+
+    <!-- GAMES -->
+
+    <section id="gamesPage" class="page">
+
+      <div class="page-head">
+
+        <div>
+
+          <span class="eyebrow">
+            ZYVO
+          </span>
+
+          <h2>
+            Ігри
+          </h2>
+
+        </div>
+
+      </div>
+
+      <input
+        id="gameSearch"
+        class="search"
+        placeholder="🔎 Пошук ігор..."
+        oninput="filterGames()"
+      >
+
+      <div id="gamesList" class="games-grid">
+        Завантаження...
+      </div>
+
+    </section>
+
+    <!-- FRIENDS -->
+
+    <section id="friendsPage" class="page">
+
+      <div class="page-head">
+
+        <div>
+
+          <span class="eyebrow">
+            SOCIAL
+          </span>
+
+          <h2>
+            Друзі
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          Додати друга
+        </h3>
+
+        <div class="input-row">
+
+          <input
+            id="friendUsername"
+            placeholder="Нікнейм"
+          >
+
+          <button onclick="addFriend()">
+            Додати
+          </button>
+
+        </div>
+
+        <div id="friendResult"></div>
+
+      </div>
+
+      <div class="section-title">
+
+        <h2>
+          Мої друзі
+        </h2>
+
+      </div>
+
+      <div id="friendsList">
+        Завантаження...
+      </div>
+
+    </section>
+
+    <!-- SHOP -->
+
+    <section id="shopPage" class="page">
+
+      <div class="page-head">
+
+        <div>
+
+          <span class="eyebrow">
+            ZYVO SHOP
+          </span>
+
+          <h2>
+            Магазин
+          </h2>
+
+        </div>
+
+        <strong id="shopCoins">
+          🪙 0
+        </strong>
+
+      </div>
+
+      <div id="skinsGrid" class="skins-grid">
+        Завантаження...
+      </div>
+
+    </section>
+
+    <!-- PROFILE -->
+
+    <section id="profilePage" class="page">
+
+      <div class="profile-card">
+
+        <div class="avatar">
+          👤
+        </div>
+
+        <h2 id="profileName">
+          Гість
+        </h2>
+
+        <div id="profileId" class="muted">
+          ID: —
+        </div>
+
+        <div class="profile-stats">
+
+          <div>
+            <strong id="profileCoins">
+              0
+            </strong>
+
+            <span>
+              Коіни
+            </span>
+          </div>
+
+          <div>
+            <strong id="profileFriends">
+              0
+            </strong>
+
+            <span>
+              Друзі
+            </span>
+          </div>
+
+          <div>
+            <strong id="profileGames">
+              0
+            </strong>
+
+            <span>
+              Ігри
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="settings-list">
+
+        <button onclick="changeUsername()">
+          ✏️ Змінити нікнейм
+        </button>
+
+        <button onclick="openPage('friends')">
+          👥 Друзі
+        </button>
+
+        <button onclick="openPage('inventory')">
+          🎒 Інвентар
+        </button>
+
+        <button onclick="openPage('settings')">
+          ⚙️ Налаштування
+        </button>
+
+        <button
+          class="danger"
+          onclick="logout()"
+        >
+          🚪 Вийти
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- INVENTORY -->
+
+    <section id="inventoryPage" class="page">
+
+      <div class="page-head">
+
+        <div>
+
+          <span class="eyebrow">
+            PROFILE
+          </span>
+
+          <h2>
+            Інвентар
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div id="inventoryGrid" class="skins-grid">
+        Завантаження...
+      </div>
+
+    </section>
+
+    <!-- SETTINGS -->
+
+    <section id="settingsPage" class="page">
+
+      <div class="page-head">
+
+        <div>
+
+          <span class="eyebrow">
+            ZYVO
+          </span>
+
+          <h2>
+            Налаштування
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div class="settings-list">
+
+        <button onclick="toggleNotifications()">
+
+          🔔 Сповіщення
+
+          <span id="notificationsState">
+            Увімкнено
+          </span>
+
+        </button>
+
+        <button onclick="showAbout()">
+          ℹ️ Про ZYVO
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MOBILE NAV -->
+
+  <nav class="bottom-nav">
+
+    <button onclick="openPage('home')">
+      <span>⌂</span>
+      <small>Головна</small>
+    </button>
+
+    <button onclick="openPage('games')">
+      <span>🎮</span>
+      <small>Ігри</small>
+    </button>
+
+    <button onclick="openPage('friends')">
+      <span>👥</span>
+      <small>Друзі</small>
+    </button>
+
+    <button onclick="openPage('shop')">
+      <span>🛒</span>
+      <small>Магазин</small>
+    </button>
+
+    <button onclick="openPage('profile')">
+      <span>👤</span>
+      <small>Профіль</small>
+    </button>
+
+  </nav>
+
+</div>
+
+<!-- MODAL -->
+
+<div id="modal" class="modal hidden">
+
+  <div class="modal-box">
+
+    <button
+      class="modal-close"
+      onclick="closeModal()"
+    >
+      ×
+    </button>
+
+    <div id="modalContent"></div>
+
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+  </html>
