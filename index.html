@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+  >
+
+  <title>ZYVO</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="loadingScreen" class="loading-screen">
+  <div class="loading-logo">ZYVO</div>
+
+  <div class="loading-bar">
+    <div id="loadingProgress"></div>
+  </div>
+
+  <div>Завантаження...</div>
+</div>
+
+<div id="authScreen" class="auth-screen hidden">
+
+  <div class="auth-card">
+    <div class="auth-logo">ZYVO</div>
+
+    <h1>Ласкаво просимо</h1>
+
+    <p>
+      Створюй, грай та спілкуйся
+    </p>
+
+    <input
+      id="usernameInput"
+      type="text"
+      maxlength="32"
+      placeholder="Твій нікнейм"
+      autocomplete="off"
+    >
+
+    <button id="loginButton" class="primary-button">
+      Увійти
+    </button>
+
+    <div id="authError" class="error-text"></div>
+  </div>
+
+</div>
+
+<div id="app" class="app hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <span>ZYVO</span>
+    </div>
+
+    <div class="top-actions">
+
+      <div class="coins">
+        🪙 <span id="coinsValue">0</span>
+      </div>
+
+      <button
+        class="avatar-button"
+        onclick="showPage('profile')"
+      >
+        <img id="topAvatar" alt="">
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="pages">
+
+    <!-- HOME -->
+
+    <section id="page-home" class="page active">
+
+      <div class="page-title-row">
+        <div>
+          <h1>Ігри</h1>
+          <p>Грай у світи від творців ZYVO</p>
+        </div>
+
+        <button
+          class="small-button"
+          onclick="loadGames()"
+        >
+          ↻
+        </button>
+      </div>
+
+      <div id="gamesList" class="games-grid">
+        <div class="empty">
+          Завантаження ігор...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- SHOP -->
+
+    <section id="page-shop" class="page">
+
+      <div class="page-title-row">
+        <div>
+          <h1>Магазин</h1>
+          <p>Купуй скіни за коіни</p>
+        </div>
+      </div>
+
+      <div id="shopList" class="skins-grid"></div>
+
+    </section>
+
+
+    <!-- INVENTORY -->
+
+    <section id="page-inventory" class="page">
+
+      <div class="page-title-row">
+        <div>
+          <h1>Інвентар</h1>
+          <p>Твої скіни</p>
+        </div>
+      </div>
+
+      <div id="inventoryList" class="skins-grid"></div>
+
+    </section>
+
+
+    <!-- FRIENDS -->
+
+    <section id="page-friends" class="page">
+
+      <div class="page-title-row">
+
+        <div>
+          <h1>Друзі</h1>
+          <p>Спілкуйся з друзями</p>
+        </div>
+
+      </div>
+
+      <div class="add-friend-box">
+
+        <input
+          id="friendUsername"
+          type="text"
+          maxlength="32"
+          placeholder="Нік друга"
+        >
+
+        <button
+          class="primary-button"
+          onclick="addFriend()"
+        >
+          Додати
+        </button>
+
+      </div>
+
+      <div id="friendsList"></div>
+
+    </section>
+
+
+    <!-- CHAT -->
+
+    <section id="page-chat" class="page chat-page">
+
+      <div class="chat-header">
+
+        <button
+          class="back-button"
+          onclick="showPage('friends')"
+        >
+          ←
+        </button>
+
+        <img id="chatAvatar" class="chat-avatar" alt="">
+
+        <div class="chat-user-info">
+          <strong id="chatUsername">Чат</strong>
+          <span id="chatStatus">Офлайн</span>
+        </div>
+
+      </div>
+
+      <div
+        id="chatMessages"
+        class="chat-messages"
+      ></div>
+
+      <div class="chat-security">
+        🔒 Тільки текстові повідомлення
+      </div>
+
+      <div class="chat-input">
+
+        <input
+          id="chatInput"
+          type="text"
+          maxlength="500"
+          placeholder="Написати повідомлення..."
+          autocomplete="off"
+        >
+
+        <button
+          onclick="sendChatMessage()"
+          class="send-button"
+        >
+          ➤
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+
+    <section id="page-profile" class="page">
+
+      <div class="profile-card">
+
+        <div class="profile-avatar-wrap">
+
+          <img
+            id="profileAvatar"
+            class="profile-avatar"
+            alt="Аватар"
+          >
+
+          <button
+            class="avatar-edit"
+            onclick="chooseAvatar()"
+          >
+            📷
+          </button>
+
+          <input
+            id="avatarFile"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            hidden
+            onchange="uploadAvatar(event)"
+          >
+
+        </div>
+
+        <h1 id="profileUsername">ZYVO</h1>
+
+        <div class="profile-coins">
+          🪙 <span id="profileCoins">0</span>
+        </div>
+
+      </div>
+
+      <div class="profile-menu">
+
+        <button onclick="claimDaily()">
+          🎁 Щоденна нагорода
+        </button>
+
+        <button onclick="showPage('inventory')">
+          🎒 Інвентар
+        </button>
+
+        <button onclick="showPage('shop')">
+          🛒 Магазин
+        </button>
+
+        <button onclick="logout()">
+          🚪 Вийти
+        </button>
+
+      </div>
+
+      <div id="profileMessage"></div>
+
+    </section>
+
+
+    <!-- GAME -->
+
+    <section id="page-game" class="page game-page">
+
+      <div class="game-header">
+
+        <button
+          class="back-button"
+          onclick="closeGame()"
+        >
+          ←
+        </button>
+
+        <strong id="gameTitle">
+          Гра
+        </strong>
+
+        <span>
+          🪙 <b id="gameCoins">0</b>
+        </span>
+
+      </div>
+
+      <div id="gameContainer" class="game-container">
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="gamePlayer" class="game-player">
+          <span id="gamePlayerSkin">🟢</span>
+        </div>
+
+        <div class="game-controls">
+
+          <div class="joystick">
+            <button
+              ontouchstart="moveLeft=true"
+              ontouchend="moveLeft=false"
+            >
+              ◀
+            </button>
+
+            <button
+              ontouchstart="moveRight=true"
+              ontouchend="moveRight=false"
+            >
+              ▶
+            </button>
+          </div>
+
+          <button
+            class="jump-button"
+            ontouchstart="jump()"
+          >
+            ↑
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <nav class="bottom-nav">
+
+    <button
+      data-page="home"
+      onclick="showPage('home')"
+    >
+      <span>🏠</span>
+      <small>Ігри</small>
+    </button>
+
+    <button
+      data-page="shop"
+      onclick="showPage('shop')"
+    >
+      <span>🛒</span>
+      <small>Магазин</small>
+    </button>
+
+    <button
+      data-page="inventory"
+      onclick="showPage('inventory')"
+    >
+      <span>🎒</span>
+      <small>Інвентар</small>
+    </button>
+
+    <button
+      data-page="friends"
+      onclick="showPage('friends')"
+    >
+      <span>👥</span>
+      <small>Друзі</small>
+    </button>
+
+    <button
+      data-page="profile"
+      onclick="showPage('profile')"
+    >
+      <span>👤</span>
+      <small>Профіль</small>
+    </button>
+
+  </nav>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
